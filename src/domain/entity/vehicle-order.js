@@ -25,19 +25,19 @@ class VehicleOrder {
     constructor(
         id,
         orderDate,
-        vehiclesList,
+        vehiclesTypesList,
         quantityList,
     ){
         if(!verifyIsString(id))
             throw new InvalidTypeError("VehicleOrder: id debe ser string");
         if(!verifyIsInstance(orderDate, Date))
             throw new InvalidTypeError("VehicleOrder: orderDate debe ser instancia de Date");
-        if(!verifyArrayInstanceOf(vehiclesList, VehicleType))
-            throw new InvalidTypeError("VehicleOrder: vehiclesList debe ser una lista de VehicleType");
+        if(!verifyArrayInstanceOf(vehiclesTypesList, VehicleType))
+            throw new InvalidTypeError("VehicleOrder: vehiclesTypesList debe ser una lista de VehicleType");
         if(!verifyArray(quantityList, verifyIsInteger))
             throw new InvalidTypeError("VehicleOrder: quantityList debe ser una lista de Numeros enteros");
 
-        if(vehiclesList.length !== quantityList.length)
+        if(vehiclesTypesList.length !== quantityList.length)
             throw new InvalidTypeError("VehicleOrder: las listas de vehiculos y cantidades deben ser de igual tamaño");
 
         const totalQuantity = sumarArray(quantityList);
@@ -46,7 +46,7 @@ class VehicleOrder {
 
         this.id = is;
         this.orderDate = orderDate;
-        this.vehiclesList = vehiclesList;
+        this.vehiclesTypesList = vehiclesTypesList;
         this.quantityList = quantityList;
     }
 }
