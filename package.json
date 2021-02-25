@@ -1,0 +1,19 @@
+{
+  "name": "workuniversity-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "db-migrate": "^0.11.12",
+    "mocha": "^8.3.0"
+  }
+}
