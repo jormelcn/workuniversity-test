@@ -37,6 +37,9 @@ class VehicleOrder {
         if(!verifyArray(quantityList, verifyIsInteger))
             throw new InvalidTypeError("VehicleOrder: quantityList debe ser una lista de Numeros enteros");
 
+        if(vehiclesList.length !== quantityList.length)
+            throw new InvalidTypeError("VehicleOrder: las listas de vehiculos y cantidades deben ser de igual tamaño");
+
         const totalQuantity = sumarArray(quantityList);
         if(totalQuantity < minQuantity || totalQuantity > maxQuantity)
             throw new InvalidOrderQuantity("VehicleOrder: La cantidad requerida excede los limites establecidos");
