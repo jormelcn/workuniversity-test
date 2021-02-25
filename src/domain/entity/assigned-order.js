@@ -34,6 +34,10 @@ class AssignedOrder {
         this.vehicleType = vehicleType;
         this.quantity = quantity;
     }
+
+    assignedHours(){
+        return this.vehicleType.manufacturingHours * this.quantity;
+    }
 }
 
 module.exports = {
