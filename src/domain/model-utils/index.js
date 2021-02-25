@@ -8,6 +8,9 @@ const {
     verifyArray,
 } = require("./verification");
 
+const {
+    sumarArray
+} = require("./arrays")
 
 module.exports = {
     verifyIsBoolean,
@@ -17,4 +20,6 @@ module.exports = {
     verifyIsInstance,
     verifyArrayInstanceOf,
     verifyArray,
+
+    sumarArray,
 }
