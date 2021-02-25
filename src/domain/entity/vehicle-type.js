@@ -1,0 +1,28 @@
+const {
+    InvalidTypeError
+} = require("../error")
+
+const {
+    verifyIsString,
+    verifyIsInteger,
+} = require("../model-utils")
+
+
+class VehicleType {
+    constructor(id, name, manufacturingHours){
+        if(!verifyIsString(id))
+            throw new InvalidTypeError("VehicleType: id debe ser string")
+        if(!verifyIsString(name))
+            throw new InvalidTypeError("VehicleType: name debe ser string")
+        if(!verifyIsInteger(manufacturingHours))
+            throw new InvalidTypeError("VehicleType: manufacturingHours debe ser un número entero")
+
+        this.id = id;
+        this.name = name;
+        this.manufacturingHours = manufacturingHours;
+    }
+}
+
+module.exports = {
+    VehicleType,
+}
