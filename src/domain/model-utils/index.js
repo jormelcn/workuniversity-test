@@ -3,6 +3,9 @@ const {
     verifyIsString,
     verifyIsNumber,
     verifyIsInteger,
+    verifyIsInstance,
+    verifyArrayInstanceOf,
+    verifyArray,
 } = require("./verification");
 
 
@@ -11,4 +14,7 @@ module.exports = {
     verifyIsString,
     verifyIsNumber,
     verifyIsInteger,
+    verifyIsInstance,
+    verifyArrayInstanceOf,
+    verifyArray,
 }

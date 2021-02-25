@@ -24,10 +24,39 @@ function verifyIsInteger(value){
     return true;
 }
 
+function verifyIsInstance(value, typeClass){
+    if(value instanceof typeClass)    
+        return true;
+    return false;
+}
+
+function verifyArrayInstanceOf(array, typeClass){
+    if(!verifyIsInstance(array, Array))
+        return false;
+    for(let i = 0; i < array.length; i++){
+        if(!verifyIsInstance(array[i], typeClass))
+            return false;
+    }
+    return true;
+}
+
+function verifyArray(array, verificator){
+    if(!verifyIsInstance(array, Array))
+        return false;
+    for(let i = 0; i < array.length; i++){
+        if(!verificator(array[i]))
+            return false;
+    }
+    return true;
+}
+
 module.exports = {
     verifyIsBoolean,
     verifyIsString,
     verifyIsNumber,
     verifyIsInteger,
+    verifyIsInstance,
+    verifyArrayInstanceOf,
+    verifyArray,
 }
 
