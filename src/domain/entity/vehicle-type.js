@@ -1,5 +1,5 @@
 const {
-    InvalidTypeError
+    InvalidArgumentError
 } = require("../error")
 
 const {
@@ -11,11 +11,11 @@ const {
 class VehicleType {
     constructor(id, name, manufacturingHours){
         if(!verifyIsString(id))
-            throw new InvalidTypeError("VehicleType: id debe ser string")
+            throw new InvalidArgumentError("VehicleType: id debe ser string")
         if(!verifyIsString(name))
-            throw new InvalidTypeError("VehicleType: name debe ser string")
+            throw new InvalidArgumentError("VehicleType: name debe ser string")
         if(!verifyIsInteger(manufacturingHours))
-            throw new InvalidTypeError("VehicleType: manufacturingHours debe ser un número entero")
+            throw new InvalidArgumentError("VehicleType: manufacturingHours debe ser un número entero")
 
         this.id = id;
         this.name = name;

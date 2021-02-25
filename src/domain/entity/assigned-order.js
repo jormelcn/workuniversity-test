@@ -3,7 +3,7 @@ const {
 } = require("./")
 
 const {
-    InvalidTypeError,
+    InvalidArgumentError,
 } = require("../error");
 
 const {
@@ -21,13 +21,13 @@ class AssignedOrder {
         quantity,
     ){
         if(!verifyIsString(id))
-            throw new InvalidTypeError("AssignedOrder: id debe ser string");
+            throw new InvalidArgumentError("AssignedOrder: id debe ser string");
         if(!verifyIsInstance(date, Date))
-            throw new InvalidTypeError("AssignedOrder: date debe ser instancia de Date");
+            throw new InvalidArgumentError("AssignedOrder: date debe ser instancia de Date");
         if(!verifyIsInstance(vehicleType, VehicleType))
-            throw new InvalidTypeError("AssignedOrder: vehicleType debe ser instancia de VehicleType");
+            throw new InvalidArgumentError("AssignedOrder: vehicleType debe ser instancia de VehicleType");
         if(!verifyIsInteger(quantity))       
-            throw new InvalidTypeError("AssignedOrder: quantity debe ser un número entero");
+            throw new InvalidArgumentError("AssignedOrder: quantity debe ser un número entero");
         
         this.id = id;
         this.date = date;

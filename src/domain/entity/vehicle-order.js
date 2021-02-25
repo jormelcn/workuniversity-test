@@ -1,5 +1,5 @@
 const {
-    InvalidTypeError,
+    InvalidArgumentError,
     InvalidOrderQuantity,
 } = require("../error");
 
@@ -29,16 +29,16 @@ class VehicleOrder {
         quantityList,
     ){
         if(!verifyIsString(id))
-            throw new InvalidTypeError("VehicleOrder: id debe ser string");
+            throw new InvalidArgumentError("VehicleOrder: id debe ser string");
         if(!verifyIsInstance(orderDate, Date))
-            throw new InvalidTypeError("VehicleOrder: orderDate debe ser instancia de Date");
+            throw new InvalidArgumentError("VehicleOrder: orderDate debe ser instancia de Date");
         if(!verifyArrayInstanceOf(vehiclesTypesList, VehicleType))
-            throw new InvalidTypeError("VehicleOrder: vehiclesTypesList debe ser una lista de VehicleType");
+            throw new InvalidArgumentError("VehicleOrder: vehiclesTypesList debe ser una lista de VehicleType");
         if(!verifyArray(quantityList, verifyIsInteger))
-            throw new InvalidTypeError("VehicleOrder: quantityList debe ser una lista de Numeros enteros");
+            throw new InvalidArgumentError("VehicleOrder: quantityList debe ser una lista de Numeros enteros");
 
         if(vehiclesTypesList.length !== quantityList.length)
-            throw new InvalidTypeError("VehicleOrder: las listas de vehiculos y cantidades deben ser de igual tamaño");
+            throw new InvalidArgumentError("VehicleOrder: las listas de vehiculos y cantidades deben ser de igual tamaño");
 
         const totalQuantity = sumarArray(quantityList);
         if(totalQuantity < minQuantity || totalQuantity > maxQuantity)

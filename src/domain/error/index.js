@@ -1,12 +1,12 @@
 
-class InvalidTypeError extends Error { }
+class InvalidArgumentError extends Error { }
 
 class NotImplementedError extends Error { }
 
 class InvalidOrderQuantity extends Error {}
 
 module.exports = {
-    InvalidTypeError,
+    InvalidArgumentError,
     NotImplementedError,
     InvalidOrderQuantity,
 }
