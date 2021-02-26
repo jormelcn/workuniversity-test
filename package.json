@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "node src/index.js",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha 'test/**/*test*.js'",
-    "migrate": "./node_modules/.bin/migrate "
+    "migrate": "migrate",
+    "migrate-test": "migrate --env test"
   },
   "author": "",
   "license": "ISC",
