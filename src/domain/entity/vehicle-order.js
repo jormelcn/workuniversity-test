@@ -44,7 +44,7 @@ class VehicleOrder {
         // if(totalQuantity < minQuantity || totalQuantity > maxQuantity)
         //     throw new InvalidOrderQuantity("VehicleOrder: La cantidad requerida excede los limites establecidos");
 
-        this.id = is;
+        this.id = id;
         this.orderDate = orderDate;
         // this.vehiclesTypesList = vehiclesTypesList;
         // this.quantityList = quantityList;
