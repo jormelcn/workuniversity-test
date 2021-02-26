@@ -57,9 +57,9 @@ class WorkDay {
         return this.workHours - this.getAssignedHours()
     }
 
-    asignateNewOrder(vehicleType, quantity){
+    asignateNewOrder(idVehicleOrder, vehicleType, quantity){
         const assignedOrder =  this.assignedOrderFactory
-            .fromVehicleTypeQuantityAndDate(vehicleType, quantity, this.date);
+            .fromPropertiesWithoutId(idVehicleOrder, vehicleType, quantity, this.date);
         if (assignedOrder.assignedHours() > this.getAvailableHours())
             throw InsufficientWorkingHours("WorkDay: No hay suficientes horas disponibles")
         

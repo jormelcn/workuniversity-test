@@ -16,12 +16,15 @@ const {
 class AssignedOrder {
     constructor(
         id,
+        idVehicleOrder,
         date,
         vehicleType,
         quantity,
     ){
         if(!verifyIsString(id))
             throw new InvalidArgumentError("AssignedOrder: id debe ser string");
+        if(!verifyIsString(idVehicleOrder))
+            throw new InvalidArgumentError("AssignedOrder: idVehicleOrder debe ser string");
         if(!verifyIsInstance(date, Date))
             throw new InvalidArgumentError("AssignedOrder: date debe ser instancia de Date");
         if(!verifyIsInstance(vehicleType, VehicleType))
@@ -30,6 +33,7 @@ class AssignedOrder {
             throw new InvalidArgumentError("AssignedOrder: quantity debe ser un número entero");
         
         this.id = id;
+        this.idVehicleOrder = idVehicleOrder;
         this.date = date;
         this.vehicleType = vehicleType;
         this.quantity = quantity;

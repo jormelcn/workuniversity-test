@@ -24,9 +24,9 @@ class AssignedOrderFactory {
         this.idGenerationService = idGenerationService;
     }
 
-    fromVehicleTypeQuantityAndDate(vehicleType, quantity, date){
+    fromPropertiesWithoutId(idVehicleOrder, vehicleType, quantity, date){
         const id = this.idGenerationService.nextId();
-        return new AssignedOrder(id, date, vehicleType, quantity);
+        return new AssignedOrder(id, idVehicleOrder, date, vehicleType, quantity);
     }
 
 }
