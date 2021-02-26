@@ -1,4 +1,3 @@
-const { query } = require("express");
 const {
     AssignedOrder,
     VehicleType,
@@ -6,8 +5,6 @@ const {
 
 const {
     InaccessibleRepository,
-    NotFoundError,
-    InvalidArgumentError,
 } = require("../../../domain/error");
 
 const {
@@ -94,8 +91,32 @@ async function saveWorkDayAssignedOrders(id, assignedOrders, pool){
     }
 }
 
+async function updateAssignedOrderQuantity(assignedOrder, pool){
+    await pool.connect();
+    try {
+        const request = pool.request();
+        const sqlQuery = `
+            UPDATE "${ASSIGNED_ORDER}"
+                SET "${ASSIGNED_ORDER_QUANTITY}" = '${assignedOrder.quantity}'
+        `;
+        await request.query(sqlQuery);
+    }
+    catch(e){
+        throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`)
+    }
+}
+
 
 module.exports = {
     getWorkDayAssignedOrders,
     saveWorkDayAssignedOrders,
+    updateAssignedOrderQuantity,
+    ASSIGNED_ORDER,
+    ASSIGNED_ORDER_ID,
+    ASSIGNED_ORDER_ID_VEHICLE_TYPE,
+    ASSIGNED_ORDER_ID_VEHICLE_ORDER,
+    ASSIGNED_ORDER_ID_WORK_DAY,
+    ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS,
+    ASSIGNED_ORDER_QUANTITY,
+
 }
