@@ -3,7 +3,9 @@ const { IdGenerationService } = require("../../domain/service/id-generation-serv
 
 
 class IdGenerationServiceUUID extends IdGenerationService {
-    constructor()
+    constructor(){
+        super()
+    }
 
     nextId(){
         return uuidv4().replace(/-/g, '');
