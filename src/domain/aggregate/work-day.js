@@ -63,7 +63,7 @@ class WorkDay {
         if (assignedOrder.assignedHours() > this.getAvailableHours())
             throw new InsufficientWorkingHours("WorkDay: No hay suficientes horas disponibles")
         
-        for(let i = 0; i < this.this.assignedOrders.length; i++){
+        for(let i = 0; i < this.assignedOrders.length; i++){
             if (this.this.assignedOrders[i].vehicleType.id === vehicleType.id){
                 this.this.assignedOrders[i].quantity += quantity;
                 return;
