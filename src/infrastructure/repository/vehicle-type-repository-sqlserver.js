@@ -115,5 +115,10 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
 }
 
 module.exports = {
-    VehicleTypeRepositorySqlServer
+    VehicleTypeRepositorySqlServer,
+    VEHICLE_TYPE,
+    VEHICLE_TYPE_ID,
+    VEHICLE_TYPE_NAME,
+    VEHICLE_TYPE_MANUFACTORING_HOURS,
+    VEHICLE_TYPE_IS_ACTIVE,
 }
