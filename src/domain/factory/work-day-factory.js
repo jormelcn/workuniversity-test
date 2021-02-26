@@ -17,6 +17,23 @@ const {
 const { WorkDay } = require("../aggregate/work-day");
 
 
+const defaultWorkHoursPerDay = [
+    // Sunday
+    0,
+    // Monday
+    16,
+    // Tuesday
+    16,
+    // Wednesday
+    16,
+    // Thursday
+    16,
+    // Friday
+    16,
+    // Saturday
+    4,
+]
+
 
 class WorkDayFactory {
 
@@ -41,6 +58,18 @@ class WorkDayFactory {
             assignedOrders, 
             this.assignedOrderFactory
         )
+    }
+
+    fromDate(date) {
+        const id = this.idGenerationService.nextId();
+        const workHours = defaultWorkHoursPerDay[date.getDay()];
+        return new WorkDay(
+            id,
+            date,
+            workHours,
+            [],
+            this.assignedOrderFactory
+        );
     }
 
 }
