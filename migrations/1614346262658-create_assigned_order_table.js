@@ -1,9 +1,9 @@
 'use strict'
 
-const { migrationDB } = require("../database");
+const { migrationDB } = require("../database-migration");
 
-module.exports.up = async function () {
-  await migrationDB().execute(`
+module.exports.up = function (done) {
+  migrationDB().execute(`
     CREATE TABLE assigned_order(
       id varchar(64) NOT NULL,
       id_vehicle_type varchar(64) NOT NULL,
@@ -16,11 +16,11 @@ module.exports.up = async function () {
       CONSTRAINT fk_assigned_order_id_vehicle_order FOREIGN KEY (id_vehicle_order) REFERENCES vehicle_order(id),
       CONSTRAINT fk_assigned_order_id_work_day FOREIGN KEY (id_work_day) REFERENCES work_day(id)
     );
-  `);
+  `).then(done);
 }
 
-module.exports.down = async function () {
-  await migrationDB().execute(`
+module.exports.down = function (done) {
+  migrationDB().execute(`
     DROP TABLE assigned_order;
-  `);
+  `).then(done);
 }
