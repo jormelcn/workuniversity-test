@@ -10,9 +10,22 @@ const assert = chai.assert;
 describe("Vehicle Type Repository", () => {
 
 
-    it("Get By Id", async function() {
+    it("Save", async function() {
+        const id = uuidv4().replace(/-/g, '');
+        const name = "Nombre Ramdom 2";
+        const vehicleType = new VehicleType(id, name, 5);
         const repository = new VehicleTypeRepositorySqlServer(pool);
-        const id = "e1015098d5a64951b26f2b6c3152f4dd";
+        await repository.save(vehicleType);
+    });
+
+    it("Get By Id", async function() {
+
+        const id = uuidv4().replace(/-/g, '');
+        const name = "Nombre Ramdom 2";
+        const vehicleType = new VehicleType(id, name, 5);
+        const repository = new VehicleTypeRepositorySqlServer(pool);
+        await repository.save(vehicleType);
+
         const item = await repository.getById(id);    
         assert.instanceOf(item, VehicleType);    
         assert.equal(item.id, id);
@@ -34,16 +47,5 @@ describe("Vehicle Type Repository", () => {
         assert.equal(item.id, id);
         await repository.update(item)
     });
-
-
-
-    // it("Save", async function() {
-    //     const id = uuidv4().replace(/-/g, '');
-    //     console.log(id);
-    //     const name = "Nombre Ramdom 2";
-    //     const vehicleType = new VehicleType(id, name, 5);
-    //     const repository = new VehicleTypeRepositorySqlServer(pool);
-    //     await repository.save(vehicleType);
-    // });
 
 });
