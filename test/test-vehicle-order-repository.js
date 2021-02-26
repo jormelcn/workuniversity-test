@@ -1,8 +1,8 @@
 const { pool } = require("../database-repository");
 const { VehicleOrderRepositorySqlServer } = require("../src/infrastructure/repository");
 const { VehicleOrder } = require("../src/domain/entity");
+const { IdGenerationServiceUUID } = require("../src/infrastructure/service")
 
-const { v4: uuidv4 } = require('uuid');
 const chai = require("chai");
 const assert = chai.assert;
 
@@ -10,7 +10,8 @@ const assert = chai.assert;
 describe("Vehicle Order Repository", () => {
 
     it("Save", async function() {
-        const id = uuidv4().replace(/-/g, '');
+        const idGenerationService = new IdGenerationServiceUUID();
+        const id = idGenerationService.nextId()
         const date = new Date();
         const vehicleOrder = new VehicleOrder(id, date);
         const repository = new VehicleOrderRepositorySqlServer(pool);
@@ -18,8 +19,8 @@ describe("Vehicle Order Repository", () => {
     });
 
     it("Get By Id", async function() {
-
-        const id = uuidv4().replace(/-/g, '');
+        const idGenerationService = new IdGenerationServiceUUID();
+        const id = idGenerationService.nextId()
         const date = new Date();
         const vehicleOrder = new VehicleOrder(id, date);
         const repository = new VehicleOrderRepositorySqlServer(pool);

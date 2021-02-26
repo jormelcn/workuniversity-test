@@ -92,4 +92,21 @@ describe("Work Day Repository", () => {
         assert.instanceOf(item, WorkDay);
     });
 
+    it("Update", async function() {
+
+        const idGenerationService = new IdGenerationService();
+        const assignedOrderFactory = new AssignedOrderFactory(idGenerationService);
+        const factory = new WorkDayFactory(idGenerationService, assignedOrderFactory);
+
+        const repository = new WorkDayRepositorySqlServer(pool, factory);
+        const item = await repository.getByDate(new Date());
+
+        item.assignedOrders[0].quantity += 1;
+
+        await repository.update(item)
+
+        const newItem = await repository.getByDate(new Date());
+
+    });
+
 });
