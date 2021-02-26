@@ -29,6 +29,7 @@ function vehicleTypeFromDTO(dto){
         dto[VEHICLE_TYPE_ID],
         dto[VEHICLE_TYPE_NAME],
         dto[VEHICLE_TYPE_MANUFACTORING_HOURS],
+        dto[VEHICLE_TYPE_IS_ACTIVE] === 1,
     );
 }
 
@@ -75,12 +76,12 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
     async save(vehicleType){
         if(!verifyIsInstance(vehicleType, VehicleType))
             throw new InvalidArgumentError("VehicleTypeRepositorySqlServer: vehicleType debe ser instancia de VehicleType");
-        const {id, name, manufacturingHours} = vehicleType;
+        const {id, name, manufacturingHours, isActive} = vehicleType;
         await this.pool.connect();
         try {
             const request = this.pool.request();
             await request.query(`
-                INSERT INTO "${VEHICLE_TYPE}" VALUES ('${id}', '${name}', '${manufacturingHours}', 1);
+                INSERT INTO "${VEHICLE_TYPE}" VALUES ('${id}', '${name}', '${manufacturingHours}', '${isActive ? 1 : 0}');
             `);
         }
         catch(e){
@@ -91,7 +92,7 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
     async update(vehicleType){
         if(!verifyIsInstance(vehicleType, VehicleType))
             throw new InvalidArgumentError("VehicleTypeRepositorySqlServer: vehicleType debe ser instancia de VehicleType");
-        const {id, name, manufacturingHours} = vehicleType;
+        const {id, name, manufacturingHours, isActive} = vehicleType;
         await this.pool.connect();
         try {
             const request = this.pool.request();
@@ -99,7 +100,8 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
                 UPDATE "${VEHICLE_TYPE}" 
                     SET
                         "${VEHICLE_TYPE_NAME}" = '${name}',
-                        "${VEHICLE_TYPE_MANUFACTORING_HOURS}" = '${manufacturingHours}'
+                        "${VEHICLE_TYPE_MANUFACTORING_HOURS}" = '${manufacturingHours}',
+                        "${VEHICLE_TYPE_IS_ACTIVE}" = '${isActive ? 1 : 0}',
                     WHERE
                         "${VEHICLE_TYPE_ID}" = '${id}'
             `);
