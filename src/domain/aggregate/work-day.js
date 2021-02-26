@@ -18,7 +18,7 @@ const {
 
 const {
     AssignedOrderFactory
-} = require("../factory");
+} = require("../factory/assigned-order-factory");
 
 
 class WorkDay {
@@ -36,7 +36,7 @@ class WorkDay {
         if(!verifyIsInteger(workHours))
             throw new InvalidArgumentError("WorkDay: workHours debe ser un número entero");
         if(!verifyArrayInstanceOf(assignedOrders, AssignedOrder))
-            throw new InvalidArgumentError("WorkDay: assignedOrders debe ser un array de AssignedOrderRepository");
+            throw new InvalidArgumentError("WorkDay: assignedOrders debe ser un array de AssignedOrders");
         if(!verifyIsInstance(assignedOrderFactory, AssignedOrderFactory))
             throw new InvalidArgumentError("WorkDay: assignedOrderFactory debe ser instancia de AssignedOrderFactory");
             
