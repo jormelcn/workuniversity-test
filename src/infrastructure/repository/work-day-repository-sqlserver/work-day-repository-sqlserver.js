@@ -1,4 +1,3 @@
-
 const {
     WorkDayRepository
 } = require("../../../domain/repository");
@@ -21,6 +20,7 @@ const {
 const {
     getWorkDayAssignedOrders,
     saveWorkDayAssignedOrders,
+    updateAssignedOrderQuantity,
 } = require("./assigned-order-utils");
 
 const WORK_DAY = "work_day";
@@ -42,9 +42,9 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
         let workDayDTO;
         try {
             const request = this.pool.request();
-            const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+            const dateStr = date.toISOString().substring(0, 10);
             const result = await request.query(`
-                SELECT * FROM "${WORK_DAY}" WHERE "${WORK_DAY_DATE}" = '${dateStr}'
+                SELECT * FROM "${WORK_DAY}" WHERE "${WORK_DAY_DATE}" = '${dateStr}';
             `);
             if (result.recordset.length === 0)
                 throw new NotFoundError(`WorkDayRepositorySqlServer: no se encontró workDay para la fecha ${dateStr}`)
@@ -73,11 +73,36 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
         catch(e){
             throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`)
         }
-        await saveWorkDayAssignedOrders(workDay.id, workDay.assignedOrders, this.pool);
+        if (workDay.assignedOrders.length > 0)
+            await saveWorkDayAssignedOrders(workDay.id, workDay.assignedOrders, this.pool);
+    }
+
+    async update(workDay){
+        if(!verifyIsInstance(workDay, WorkDay))
+            throw new InvalidArgumentError("WorkDayRepositorySqlServer: workDay debe ser instancia de WorkDay");
+        const old_workDay = await this.getByDate(workDay.date);
+        const prevExists_assignedOrders_ids = old_workDay.assignedOrders.map(ao => ao.id);
+    
+        const update_assignedOrders = workDay.assignedOrders.filter( 
+            ao => prevExists_assignedOrders_ids.indexOf(ao.id) !== -1
+        );
+        for(let i=0; i < update_assignedOrders.length; i++)
+            await updateAssignedOrderQuantity(update_assignedOrders[i], this.pool);
+        
+        const new_assignedOrders = workDay.assignedOrders.filter( 
+            ao => prevExists_assignedOrders_ids.indexOf(ao.id) === -1
+        );
+        if (new_assignedOrders.length > 0)
+            await saveWorkDayAssignedOrders(workDay.id, new_assignedOrders, this.pool);
+
     }
 
 }
 
 module.exports = {
-    WorkDayRepositorySqlServer
+    WorkDayRepositorySqlServer,
+    WORK_DAY,
+    WORK_DAY_ID,
+    WORK_DAY_DATE,
+    WORK_DAY_WORK_HOURS,
 }
