@@ -21,6 +21,10 @@ const {
     getWorkDayAssignedOrders,
     saveWorkDayAssignedOrders,
     updateAssignedOrderQuantity,
+    ASSIGNED_ORDER,
+    ASSIGNED_ORDER_ID_WORK_DAY,
+    ASSIGNED_ORDER_QUANTITY,
+    ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS,
 } = require("./assigned-order-utils");
 
 const WORK_DAY = "work_day";
@@ -37,26 +41,64 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
         this.workDayFactory = workDayFactory;
     }
 
-    async getByDate(date){
+    async getFirstWithAvailableHoursStartingAt(date){
+        const dateStr = date.toISOString().substring(0, 10);
+        const query = `
+            SELECT
+                wd."${WORK_DAY_ID}",
+                wd."${WORK_DAY_DATE}",
+                wd."${WORK_DAY_WORK_HOURS}"
+            FROM
+                "${WORK_DAY}" AS wd
+                INNER JOIN "${ASSIGNED_ORDER}" AS ao
+                    ON wd."${WORK_DAY_ID}" = ao."${ASSIGNED_ORDER_ID_WORK_DAY}"
+            WHERE 
+                wd."${WORK_DAY_DATE}" >= '${dateStr}'
+            GROUP BY 
+                wd."${WORK_DAY_ID}", wd."${WORK_DAY_WORK_HOURS}", wd."${WORK_DAY_DATE}"
+            HAVING 
+                SUM(ao."${ASSIGNED_ORDER_QUANTITY}" 
+                    * ao."${ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS}"
+                ) < wd."${WORK_DAY_WORK_HOURS}"
+        `;
         await this.pool.connect();
-        let workDayDTO;
+        let result;
         try {
             const request = this.pool.request();
-            const dateStr = date.toISOString().substring(0, 10);
-            const result = await request.query(`
-                SELECT * FROM "${WORK_DAY}" WHERE "${WORK_DAY_DATE}" = '${dateStr}';
-            `);
-            if (result.recordset.length === 0)
-                throw new NotFoundError(`WorkDayRepositorySqlServer: no se encontró workDay para la fecha ${dateStr}`)
-            workDayDTO = result.recordset[0];
+            result = await request.query(query);
         }catch(e){
-            throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`)
+            throw new InaccessibleRepository(`WorkDayRepositorySqlServer: error desconocido -> ${e}`)
         }
+        if (result.recordset.length === 0)
+            throw new NotFoundError(`WorkDayRepositorySqlServer: no se encontró workDay con horas disponibles`);
+        const workDayDTO = result.recordset[0];
         const id = workDayDTO[WORK_DAY_ID];
         const _date = workDayDTO[WORK_DAY_DATE];
         const workHours = workDayDTO[WORK_DAY_WORK_HOURS];
         const assignedOrders = await getWorkDayAssignedOrders(id, _date, this.pool);
-        return this.workDayFactory.fromProperties(id, _date, workHours, assignedOrders)
+        return this.workDayFactory.fromProperties(id, _date, workHours, assignedOrders);   
+    }
+
+    async getByDate(date){
+        await this.pool.connect();
+        let result;
+        try {
+            const request = this.pool.request();
+            const dateStr = date.toISOString().substring(0, 10);
+            result = await request.query(`
+                SELECT * FROM "${WORK_DAY}" WHERE "${WORK_DAY_DATE}" = '${dateStr}';
+            `);
+        }catch(e){
+            throw new InaccessibleRepository(`WorkDayRepositorySqlServer: error desconocido -> ${e}`)
+        }
+        if (result.recordset.length === 0)
+            throw new NotFoundError(`WorkDayRepositorySqlServer: no se encontró workDay para la fecha ${dateStr}`);
+        const workDayDTO = result.recordset[0];
+        const id = workDayDTO[WORK_DAY_ID];
+        const _date = workDayDTO[WORK_DAY_DATE];
+        const workHours = workDayDTO[WORK_DAY_WORK_HOURS];
+        const assignedOrders = await getWorkDayAssignedOrders(id, _date, this.pool);
+        return this.workDayFactory.fromProperties(id, _date, workHours, assignedOrders);
     }
 
     async save(workDay){
@@ -71,7 +113,7 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
             `);
         }
         catch(e){
-            throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`)
+            throw new InaccessibleRepository(`WorkDayRepositorySqlServer: error desconocido -> ${e}`)
         }
         if (workDay.assignedOrders.length > 0)
             await saveWorkDayAssignedOrders(workDay.id, workDay.assignedOrders, this.pool);

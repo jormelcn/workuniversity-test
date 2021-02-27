@@ -66,4 +66,13 @@ describe("Work Day Repository", () => {
         assert.equal(workDay.assignedOrders[0].quantity, updated.assignedOrders[0].quantity);
     });
 
+    it("Get First With Available Hours StartingAt", async function() {
+        const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
+        const workDay = dummyFactory.workDay();
+        await repository.save(workDay);
+
+        const freeWorkDay = await repository.getFirstWithAvailableHoursStartingAt(new Date());
+        assert.instanceOf(freeWorkDay, WorkDay);
+    });
+
 });
