@@ -18,7 +18,7 @@ const {
 
 const {
     AssignedOrderFactory
-} = require("../factory");
+} = require("../factory/assigned-order-factory");
 
 
 class WorkDay {
@@ -36,7 +36,7 @@ class WorkDay {
         if(!verifyIsInteger(workHours))
             throw new InvalidArgumentError("WorkDay: workHours debe ser un número entero");
         if(!verifyArrayInstanceOf(assignedOrders, AssignedOrder))
-            throw new InvalidArgumentError("WorkDay: assignedOrders debe ser un array de AssignedOrderRepository");
+            throw new InvalidArgumentError("WorkDay: assignedOrders debe ser un array de AssignedOrders");
         if(!verifyIsInstance(assignedOrderFactory, AssignedOrderFactory))
             throw new InvalidArgumentError("WorkDay: assignedOrderFactory debe ser instancia de AssignedOrderFactory");
             
@@ -61,9 +61,9 @@ class WorkDay {
         const assignedOrder =  this.assignedOrderFactory
             .fromPropertiesWithoutId(idVehicleOrder, vehicleType, quantity, this.date);
         if (assignedOrder.assignedHours() > this.getAvailableHours())
-            throw InsufficientWorkingHours("WorkDay: No hay suficientes horas disponibles")
+            throw new InsufficientWorkingHours("WorkDay: No hay suficientes horas disponibles")
         
-        for(let i = 0; i < this.this.assignedOrders.length; i++){
+        for(let i = 0; i < this.assignedOrders.length; i++){
             if (this.this.assignedOrders[i].vehicleType.id === vehicleType.id){
                 this.this.assignedOrders[i].quantity += quantity;
                 return;

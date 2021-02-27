@@ -1,6 +1,6 @@
 const {
     VehicleType
-} = require("./")
+} = require("./vehicle-type");
 
 const {
     InvalidArgumentError,
