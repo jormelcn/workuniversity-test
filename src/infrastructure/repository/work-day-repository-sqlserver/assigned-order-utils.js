@@ -11,6 +11,7 @@ const {
     VEHICLE_TYPE,
     VEHICLE_TYPE_ID,
     VEHICLE_TYPE_NAME,
+    VEHICLE_TYPE_IS_ACTIVE,
 } = require("../vehicle-type-repository-sqlserver")
 
 
@@ -26,7 +27,8 @@ function assignedOrderFromDTO(dto, date){
     const vehicleType = new VehicleType(
         dto[ASSIGNED_ORDER_ID_VEHICLE_TYPE],
         dto.name_vehicle_type,
-        dto[ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS]
+        dto[ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS],
+        dto.is_active_vehicle_type === 1,
     );
 
     return new AssignedOrder(
@@ -50,7 +52,8 @@ async function getWorkDayAssignedOrders(id, date, pool){
                 ao."${ASSIGNED_ORDER_ID_VEHICLE_ORDER}",
                 ao."${ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS}",
                 ao."${ASSIGNED_ORDER_QUANTITY}",
-                vt."${VEHICLE_TYPE_NAME}" AS name_vehicle_type
+                vt."${VEHICLE_TYPE_NAME}" AS name_vehicle_type,
+                vt."${VEHICLE_TYPE_IS_ACTIVE}" AS is_active_vehicle_type
             FROM 
                 "${ASSIGNED_ORDER}" AS ao
                 INNER JOIN "${VEHICLE_TYPE}" AS vt 
@@ -58,6 +61,7 @@ async function getWorkDayAssignedOrders(id, date, pool){
             WHERE
                 ao."${ASSIGNED_ORDER_ID_WORK_DAY}" = '${id}'
         `;
+        
         const result = await request.query(query);
         return result.recordset.map(dto => assignedOrderFromDTO(dto, date))
     }

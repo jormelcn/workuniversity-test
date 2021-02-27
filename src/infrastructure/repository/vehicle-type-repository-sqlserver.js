@@ -96,15 +96,17 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
         await this.pool.connect();
         try {
             const request = this.pool.request();
-            await request.query(`
+            const query = `
                 UPDATE "${VEHICLE_TYPE}" 
                     SET
                         "${VEHICLE_TYPE_NAME}" = '${name}',
                         "${VEHICLE_TYPE_MANUFACTORING_HOURS}" = '${manufacturingHours}',
-                        "${VEHICLE_TYPE_IS_ACTIVE}" = '${isActive ? 1 : 0}',
+                        "${VEHICLE_TYPE_IS_ACTIVE}" = '${isActive ? 1 : 0}'
                     WHERE
                         "${VEHICLE_TYPE_ID}" = '${id}'
-            `);
+            `;
+
+            await request.query(query);
         }
         catch(e){
             throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`);
