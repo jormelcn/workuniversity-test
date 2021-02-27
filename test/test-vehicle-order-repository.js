@@ -1,34 +1,28 @@
 const { pool } = require("../database-repository");
 const { VehicleOrderRepositorySqlServer } = require("../src/infrastructure/repository");
 const { VehicleOrder } = require("../src/domain/entity");
-const { IdGenerationServiceUUID } = require("../src/infrastructure/service")
 
 const chai = require("chai");
 const assert = chai.assert;
 
+const { dummyFactory } = require("./dummy-factory");
 
 describe("Vehicle Order Repository", () => {
 
     it("Save", async function() {
-        const idGenerationService = new IdGenerationServiceUUID();
-        const id = idGenerationService.nextId()
-        const date = new Date();
-        const vehicleOrder = new VehicleOrder(id, date);
+        const vehicleOrder = dummyFactory.vehicleOrder()
         const repository = new VehicleOrderRepositorySqlServer(pool);
         await repository.save(vehicleOrder);
     });
 
     it("Get By Id", async function() {
-        const idGenerationService = new IdGenerationServiceUUID();
-        const id = idGenerationService.nextId()
-        const date = new Date();
-        const vehicleOrder = new VehicleOrder(id, date);
+        const vehicleOrder = dummyFactory.vehicleOrder();
         const repository = new VehicleOrderRepositorySqlServer(pool);
         await repository.save(vehicleOrder);
 
-        const item = await repository.getById(id);    
+        const item = await repository.getById(vehicleOrder.id);    
         assert.instanceOf(item, VehicleOrder);    
-        assert.equal(item.id, id);
+        assert.equal(item.id, vehicleOrder.id);
     });
 
 
@@ -38,6 +32,5 @@ describe("Vehicle Order Repository", () => {
         assert.isArray(items);
         items.map(item => assert.instanceOf(item, VehicleOrder));
     });
-
 
 });
