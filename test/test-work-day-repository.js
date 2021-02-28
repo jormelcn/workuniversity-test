@@ -12,12 +12,31 @@ const { WorkDay } = require("../src/domain/aggregate");
 const { dummyFactory } = require("./dummy-factory");
 
 const chai = require("chai");
+const { expect } = require("chai");
 const assert = chai.assert;
 
 
 
 describe("Work Day Repository", () => {
 
+
+    it("Get Last Assigned Date", async function(){
+        const workDay = dummyFactory.workDay()
+        
+        const repository = new WorkDayRepositorySqlServer(pool);
+        
+        //await expect(() => repository.getLastAssigedDate()).to.throw();
+        
+        repository.save(workDay);
+
+        const lastDate = await repository.getLastAssigedDate();
+        assert.instanceOf(lastDate, Date);
+        
+        const lastDateStr = lastDate.toISOString().substring(0,10);
+        const expectedDateStr = workDay.date.toISOString().substring(0,10);
+
+        assert.equal(lastDateStr, expectedDateStr);
+    });
 
     it("Save", async function() {
         const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);

@@ -41,6 +41,26 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
         this.workDayFactory = workDayFactory;
     }
 
+    async getLastAssigedDate(){
+        const query = `
+        SELECT 
+            MAX("${WORK_DAY_DATE}") as last_date
+        FROM 
+            "${WORK_DAY}"
+        `;
+        await this.pool.connect();
+        let result;
+        try {
+            const request = this.pool.request();
+            result = await request.query(query);
+        }catch(e){
+            throw new InaccessibleRepository(`WorkDayRepositorySqlServer: error desconocido -> ${e}`);
+        }
+        if (result.recordset[0].last_date == null)
+            throw new NotFoundError(`WorkDayRepositorySqlServer: no hay ningun dia de trabajo asignado`);
+        return result.recordset[0].last_date;
+    }
+
     async getFirstWithAvailableHoursStartingAt(date){
         const dateStr = date.toISOString().substring(0, 10);
         const query = `
