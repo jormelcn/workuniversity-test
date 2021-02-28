@@ -12,9 +12,12 @@ const {
     WorkDay,
 } = require("../../../domain/aggregate");
 
+const { 
+    WorkDayFactory,
+} = require("../../../domain/factory");
+
 const {
     verifyIsInstance,
-    verifyIsString,
 } = require("../../../domain/model-utils");
 
 const {
@@ -38,6 +41,9 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
     constructor(pool, workDayFactory){
         super()
         this.pool = pool;
+
+        if(!verifyIsInstance(workDayFactory, WorkDayFactory))
+            throw new InvalidArgumentError("WorkDayRepositorySqlServer: workDayFactory debe ser instancia de WorkDayFactory");
         this.workDayFactory = workDayFactory;
     }
 
@@ -67,19 +73,22 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
             SELECT
                 wd."${WORK_DAY_ID}",
                 wd."${WORK_DAY_DATE}",
-                wd."${WORK_DAY_WORK_HOURS}"
+                wd."${WORK_DAY_WORK_HOURS}",
+                COALESCE(SUM(ao."${ASSIGNED_ORDER_QUANTITY}" * ao."${ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS}"), 0) AS assigned_hours
             FROM
                 "${WORK_DAY}" AS wd
-                INNER JOIN "${ASSIGNED_ORDER}" AS ao
+                LEFT JOIN "${ASSIGNED_ORDER}" AS ao
                     ON wd."${WORK_DAY_ID}" = ao."${ASSIGNED_ORDER_ID_WORK_DAY}"
             WHERE 
                 wd."${WORK_DAY_DATE}" >= '${dateStr}'
             GROUP BY 
                 wd."${WORK_DAY_ID}", wd."${WORK_DAY_WORK_HOURS}", wd."${WORK_DAY_DATE}"
             HAVING 
-                SUM(ao."${ASSIGNED_ORDER_QUANTITY}" 
-                    * ao."${ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS}"
-                ) < wd."${WORK_DAY_WORK_HOURS}"
+                COALESCE(SUM(ao."${ASSIGNED_ORDER_QUANTITY}" * ao."${ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS}"), 0) < wd."${WORK_DAY_WORK_HOURS}"
+            ORDER BY 
+                wd."${WORK_DAY_DATE}" ASC
+            OFFSET 0 ROWS
+                FETCH NEXT 1 ROWS ONLY;
         `;
         await this.pool.connect();
         let result;
