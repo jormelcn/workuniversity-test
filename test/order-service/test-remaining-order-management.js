@@ -22,22 +22,28 @@ describe("Remaining Order Management", () => {
         type2.manufacturingHours = 3;
 
         const manager = new RemainingOrderManagement([type1, type2], [1, 2]);
-
         assert.deepEqual(manager.serialiceHours(), [5, 3, 3]);
+        assert.isFalse(manager.orderIsComplete());
 
         const v1 = manager.orderVehicle(3);
         assert.instanceOf(v1, VehicleType)
         assert.equal(v1.manufacturingHours, 3);
-
         assert.deepEqual(manager.serialiceHours(), [5, 3]);
+        assert.isFalse(manager.orderIsComplete());
 
         const v2 = manager.orderVehicle(5);
         assert.instanceOf(v2, VehicleType)
         assert.equal(v2.manufacturingHours, 5);
-
         assert.deepEqual(manager.serialiceHours(), [3]);
+        assert.isFalse(manager.orderIsComplete());
 
         expect(() => manager.orderVehicle(5)).to.throw();
+
+        const v3 = manager.orderVehicle(3);
+        assert.instanceOf(v3, VehicleType)
+        assert.equal(v3.manufacturingHours, 3);
+        assert.deepEqual(manager.serialiceHours(), []);
+        assert.isTrue(manager.orderIsComplete());
     });
 
 });

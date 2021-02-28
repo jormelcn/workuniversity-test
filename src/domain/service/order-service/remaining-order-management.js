@@ -5,6 +5,14 @@ class RemainingOrderManagement{
         this.vehicleTypes = vehicleTypes;
         this.quantities = quantities.map(q => q);
     }
+
+    orderIsComplete(){
+        for(let i = 0; i < this.quantities.length; i++){
+            if(this.quantities[i] > 0)
+                return false;
+        }
+        return true;
+    }
     
     serialiceHours(){
         const hours = [];
