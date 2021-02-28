@@ -5,6 +5,10 @@ const {
 
 class WorkDayRepository {
 
+    getLastAssigedDate(){
+        throw new NotImplementedError("WorkDayRepository: se debe implementar getLastAssigedDate");
+    }
+
     getFirstWithAvailableHoursStartingAt(date){
         throw new NotImplementedError("WorkDayRepository: se debe implementar getFirstWithAvailableHoursStartingAt");
     }

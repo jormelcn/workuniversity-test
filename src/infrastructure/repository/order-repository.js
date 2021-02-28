@@ -1,5 +1,5 @@
 const {
-    VehicleOrderRepository,
+    OrderRepository,
 } = require("../../domain/repository");
 
 const {
@@ -9,7 +9,7 @@ const {
 } = require("../../domain/error");
 
 const { 
-    VehicleOrder,
+    Order,
 } = require("../../domain/entity");
 
 const {
@@ -22,14 +22,14 @@ const VEHICLE_ORDER = "vehicle_order";
 const VEHICLE_ORDER_ID = "id";
 const VEHICLE_ORDER_DATETIME_OF_REQUEST = "datetime_of_request";
 
-function VehicleOrderFromDTO(dto){
-    return new VehicleOrder(
+function OrderFromDTO(dto){
+    return new Order(
         dto[VEHICLE_ORDER_ID],
         dto[VEHICLE_ORDER_DATETIME_OF_REQUEST]
     )
 }
 
-class VehicleOrderRepositorySqlServer extends VehicleOrderRepository {
+class OrderRepositorySqlServer extends OrderRepository {
 
     constructor(pool){
         super();
@@ -38,7 +38,7 @@ class VehicleOrderRepositorySqlServer extends VehicleOrderRepository {
 
     async getById(id){
         if(!verifyIsString(id))
-            throw new InvalidArgumentError("VehicleOrderRepositorySqlServer: id debe ser string");
+            throw new InvalidArgumentError("OrderRepositorySqlServer: id debe ser string");
         await this.pool.connect();
         try {
             const request = this.pool.request();
@@ -46,12 +46,12 @@ class VehicleOrderRepositorySqlServer extends VehicleOrderRepository {
                 SELECT * FROM "${VEHICLE_ORDER}" WHERE "${VEHICLE_ORDER_ID}" = '${id}';
             `);
             if (result.recordset.length === 0)
-                throw new NotFoundError(`VehicleOrderRepositorySqlServer: no se encontró el id ${id}`)
+                throw new NotFoundError(`OrderRepositorySqlServer: no se encontró el id ${id}`)
             const resultDTO = result.recordset[0];
-            return VehicleOrderFromDTO(resultDTO);
+            return OrderFromDTO(resultDTO);
         }
         catch(e){
-            throw new InaccessibleRepository(`VehicleOrderRepositorySqlServer: error desconocido -> ${e}`)
+            throw new InaccessibleRepository(`OrderRepositorySqlServer: error desconocido -> ${e}`)
         }
     }
 
@@ -62,17 +62,17 @@ class VehicleOrderRepositorySqlServer extends VehicleOrderRepository {
             const result = await request.query(`
                 SELECT * FROM "${VEHICLE_ORDER}";
             `);
-            return result.recordset.map(dto => VehicleOrderFromDTO(dto))
+            return result.recordset.map(dto => OrderFromDTO(dto))
         }
         catch(e){
-            throw new InaccessibleRepository(`VehicleOrderRepositorySqlServer: error desconocido -> ${e}`)
+            throw new InaccessibleRepository(`OrderRepositorySqlServer: error desconocido -> ${e}`)
         }
     }
 
-    async save(vehicleOrder){
-        if(!verifyIsInstance(vehicleOrder, VehicleOrder))
-            throw new InvalidArgumentError("VehicleOrderRepositorySqlServer: vehicleOrder debe ser instancia de VehicleOrder");
-        const {id, orderDate} = vehicleOrder;
+    async save(order){
+        if(!verifyIsInstance(order, Order))
+            throw new InvalidArgumentError("OrderRepositorySqlServer: order debe ser instancia de Order");
+        const {id, orderDate} = order;
         await this.pool.connect();
         try {
             const request = this.pool.request();
@@ -81,13 +81,13 @@ class VehicleOrderRepositorySqlServer extends VehicleOrderRepository {
             `);
         }
         catch(e){
-            throw new InaccessibleRepository(`VehicleOrderRepositorySqlServer: error desconocido -> ${e}`);
+            throw new InaccessibleRepository(`OrderRepositorySqlServer: error desconocido -> ${e}`);
         }
     }
 }
 
 module.exports = {
-    VehicleOrderRepositorySqlServer,
+    OrderRepositorySqlServer,
     VEHICLE_ORDER,
     VEHICLE_ORDER_ID,
     VEHICLE_ORDER_DATETIME_OF_REQUEST,

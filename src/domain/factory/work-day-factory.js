@@ -8,7 +8,7 @@ const {
 
 const {
     IdGenerationService
-} = require("../service");
+} = require("../service/id-generation-service");
 
 const {
     AssignedOrderFactory
