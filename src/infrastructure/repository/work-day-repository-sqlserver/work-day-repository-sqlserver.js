@@ -111,9 +111,9 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
     async getByDate(date){
         await this.pool.connect();
         let result;
+        const dateStr = date.toISOString().substring(0, 10);
         try {
             const request = this.pool.request();
-            const dateStr = date.toISOString().substring(0, 10);
             result = await request.query(`
                 SELECT * FROM "${WORK_DAY}" WHERE "${WORK_DAY_DATE}" = '${dateStr}';
             `);
