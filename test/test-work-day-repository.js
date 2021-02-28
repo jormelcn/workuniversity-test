@@ -9,21 +9,23 @@ const {
 
 
 const { WorkDay } = require("../src/domain/aggregate");
+
 const { dummyFactory } = require("./dummy-factory");
+const { clearDatabase } = require("./utils");
 
-const chai = require("chai");
-const { expect } = require("chai");
-const assert = chai.assert;
-
+const { assert} = require("chai");
 
 
 describe("Work Day Repository", () => {
 
+    before(async function(){
+        await clearDatabase();
+    });
 
     it("Get Last Assigned Date", async function(){
         const workDay = dummyFactory.workDay()
         
-        const repository = new WorkDayRepositorySqlServer(pool);
+        const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
         
         //await expect(() => repository.getLastAssigedDate()).to.throw();
         
@@ -41,7 +43,7 @@ describe("Work Day Repository", () => {
     it("Save", async function() {
         const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);
         const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
-        const repository = new WorkDayRepositorySqlServer(pool);
+        const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
 
         const vehicleOrder = dummyFactory.vehicleOrder()
         await vehicleOrderRepository.save(vehicleOrder);
@@ -86,8 +88,22 @@ describe("Work Day Repository", () => {
     });
 
     it("Get First With Available Hours StartingAt", async function() {
+        await clearDatabase();
+
+        const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);
+        const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
         const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
+
+        const vehicleOrder = dummyFactory.vehicleOrder()
+        await vehicleOrderRepository.save(vehicleOrder);
+
+        const vehicleType = dummyFactory.vehicleType();
+        await vehicleTypeRepository.save(vehicleType);
+
         const workDay = dummyFactory.workDay();
+        workDay.workHours = 16;
+        workDay.asignateNewOrder(vehicleOrder.id, vehicleType, 1);
+
         await repository.save(workDay);
 
         const freeWorkDay = await repository.getFirstWithAvailableHoursStartingAt(new Date());

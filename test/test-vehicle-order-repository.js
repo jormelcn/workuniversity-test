@@ -6,8 +6,13 @@ const chai = require("chai");
 const assert = chai.assert;
 
 const { dummyFactory } = require("./dummy-factory");
+const { clearDatabase } = require("./utils");
 
 describe("Vehicle Order Repository", () => {
+
+    before(async function(){
+        await clearDatabase();
+    });
 
     it("Save", async function() {
         const vehicleOrder = dummyFactory.vehicleOrder()
