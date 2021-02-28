@@ -8,7 +8,7 @@ const {
 
 const {
     IdGenerationService
-} = require("../service");
+} = require("../service/id-generation-service");
 
 const {
     AssignedOrder
@@ -24,9 +24,9 @@ class AssignedOrderFactory {
         this.idGenerationService = idGenerationService;
     }
 
-    fromPropertiesWithoutId(idVehicleOrder, vehicleType, quantity, date){
+    fromPropertiesWithoutId(idOrder, vehicleType, quantity, date){
         const id = this.idGenerationService.nextId();
-        return new AssignedOrder(id, idVehicleOrder, date, vehicleType, quantity);
+        return new AssignedOrder(id, idOrder, date, vehicleType, quantity);
     }
 
 }

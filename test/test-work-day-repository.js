@@ -2,7 +2,7 @@ const { pool } = require("../database-repository");
 
 const { 
     WorkDayRepositorySqlServer, 
-    VehicleOrderRepositorySqlServer,
+    OrderRepositorySqlServer,
     VehicleTypeRepositorySqlServer,
 } = require("../src/infrastructure/repository");
 
@@ -41,18 +41,18 @@ describe("Work Day Repository", () => {
     });
 
     it("Save", async function() {
-        const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);
+        const orderRepository = new OrderRepositorySqlServer(pool);
         const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
         const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
 
-        const vehicleOrder = dummyFactory.vehicleOrder()
-        await vehicleOrderRepository.save(vehicleOrder);
+        const order = dummyFactory.order()
+        await orderRepository.save(order);
 
         const vehicleType = dummyFactory.vehicleType();
         await vehicleTypeRepository.save(vehicleType);
 
         const workDay = dummyFactory.workDay();
-        workDay.asignateNewOrder(vehicleOrder.id, vehicleType, 1);
+        workDay.asignateNewOrder(order.id, vehicleType, 1);
         await repository.save(workDay);
     });
 
@@ -67,18 +67,18 @@ describe("Work Day Repository", () => {
     });
 
     it("Update", async function() {
-        const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);
+        const orderRepository = new OrderRepositorySqlServer(pool);
         const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
         const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
 
-        const vehicleOrder = dummyFactory.vehicleOrder()
-        await vehicleOrderRepository.save(vehicleOrder);
+        const order = dummyFactory.order()
+        await orderRepository.save(order);
 
         const vehicleType = dummyFactory.vehicleType();
         await vehicleTypeRepository.save(vehicleType);
 
         const workDay = dummyFactory.workDay();
-        workDay.asignateNewOrder(vehicleOrder.id, vehicleType, 1);
+        workDay.asignateNewOrder(order.id, vehicleType, 1);
         await repository.save(workDay);
 
         workDay.assignedOrders[0].quantity += 1;
@@ -90,19 +90,19 @@ describe("Work Day Repository", () => {
     it("Get First With Available Hours StartingAt", async function() {
         await clearDatabase();
 
-        const vehicleOrderRepository = new VehicleOrderRepositorySqlServer(pool);
+        const orderRepository = new OrderRepositorySqlServer(pool);
         const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
         const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
 
-        const vehicleOrder = dummyFactory.vehicleOrder()
-        await vehicleOrderRepository.save(vehicleOrder);
+        const order = dummyFactory.order()
+        await orderRepository.save(order);
 
         const vehicleType = dummyFactory.vehicleType();
         await vehicleTypeRepository.save(vehicleType);
 
         const workDay = dummyFactory.workDay();
         workDay.workHours = 16;
-        workDay.asignateNewOrder(vehicleOrder.id, vehicleType, 1);
+        workDay.asignateNewOrder(order.id, vehicleType, 1);
 
         await repository.save(workDay);
 

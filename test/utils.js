@@ -10,7 +10,7 @@ const {
 
 const {
     VEHICLE_ORDER
-} = require("../src/infrastructure/repository/vehicle-order-repository");
+} = require("../src/infrastructure/repository/order-repository");
 
 const {
     VEHICLE_TYPE

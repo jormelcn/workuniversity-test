@@ -21,9 +21,9 @@ function strDate(date){
 
 describe("Work Day Sequence management", () => {
 
-    // before(async function(){
-    //     await clearDatabase();
-    // });
+    before(async function(){
+        await clearDatabase();
+    });
 
     it("Next Day without prev registered day", async function() {
         await clearDatabase();
@@ -45,7 +45,7 @@ describe("Work Day Sequence management", () => {
 
     it("Next Day with prev registered day", async function() {
 
-        await clearDatabase();
+        //await clearDatabase();
 
         const type1 = dummyFactory.vehicleType();
         const type2 = dummyFactory.vehicleType();

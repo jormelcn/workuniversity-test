@@ -78,7 +78,7 @@ async function saveWorkDayAssignedOrders(id, assignedOrders, pool){
             `(
                 '${ao.id}', 
                 '${ao.vehicleType.id}', 
-                '${ao.idVehicleOrder}', 
+                '${ao.idOrder}', 
                 '${id}', 
                 '${ao.vehicleType.manufacturingHours}',
                 '${ao.quantity}'

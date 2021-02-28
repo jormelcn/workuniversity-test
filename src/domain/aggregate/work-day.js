@@ -57,15 +57,15 @@ class WorkDay {
         return this.workHours - this.getAssignedHours()
     }
 
-    asignateNewOrder(idVehicleOrder, vehicleType, quantity){
+    asignateNewOrder(idOrder, vehicleType, quantity){
         const assignedOrder =  this.assignedOrderFactory
-            .fromPropertiesWithoutId(idVehicleOrder, vehicleType, quantity, this.date);
+            .fromPropertiesWithoutId(idOrder, vehicleType, quantity, this.date);
         if (assignedOrder.assignedHours() > this.getAvailableHours())
             throw new InsufficientWorkingHours("WorkDay: No hay suficientes horas disponibles")
         
         for(let i = 0; i < this.assignedOrders.length; i++){
-            if (this.this.assignedOrders[i].vehicleType.id === vehicleType.id){
-                this.this.assignedOrders[i].quantity += quantity;
+            if (this.assignedOrders[i].vehicleType.id === vehicleType.id){
+                this.assignedOrders[i].quantity += quantity;
                 return;
             }
         }

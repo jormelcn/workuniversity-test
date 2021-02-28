@@ -8,7 +8,7 @@ const {
 } = require("../src/infrastructure/service");
 
 const { 
-    VehicleOrder,
+    Order,
     VehicleType,
 } = require("../src/domain/entity");
 
@@ -20,10 +20,14 @@ class DummyFactory {
         idGenerationService,
     ){
         this._workDayFactory = workDayFactory;
-        this.idGenerationService = idGenerationService;
+        this._idGenerationService = idGenerationService;
 
         this.vehicleTypeCount = 0;
         this.workDayCount = 0;
+    }
+
+    idGenerationService(){
+        return this._idGenerationService;
     }
 
     workDayFactory(){
@@ -33,16 +37,16 @@ class DummyFactory {
     vehicleType(){
         this.vehicleTypeCount += 1;
         return new VehicleType(
-            this.idGenerationService.nextId(), 
+            this._idGenerationService.nextId(), 
             `Dummy Name ${this.vehicleTypeCount}`, 
             2,
             true,
         );
     }
 
-    vehicleOrder(){
-        return new VehicleOrder(
-            this.idGenerationService.nextId(), 
+    order(){
+        return new Order(
+            this._idGenerationService.nextId(), 
             new Date()
         );
     }
