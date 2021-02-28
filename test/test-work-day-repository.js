@@ -27,9 +27,7 @@ describe("Work Day Repository", () => {
         
         const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
         
-        //await expect(() => repository.getLastAssigedDate()).to.throw();
-        
-        repository.save(workDay);
+        await repository.save(workDay);
 
         const lastDate = await repository.getLastAssigedDate();
         assert.instanceOf(lastDate, Date);
