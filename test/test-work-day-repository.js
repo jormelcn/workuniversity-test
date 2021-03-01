@@ -108,4 +108,62 @@ describe("Work Day Repository", () => {
         assert.instanceOf(freeWorkDay, WorkDay);
     });
 
+    it("Get From to", async function() {
+        await clearDatabase();
+
+        const orderRepository = new OrderRepositorySqlServer(pool);
+        const vehicleTypeRepository = new VehicleTypeRepositorySqlServer(pool);
+        const repository = new WorkDayRepositorySqlServer(pool, dummyFactory.workDayFactory());
+
+        const today = new Date();
+        
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const after7days = new Date();
+        after7days.setDate(after7days.getDate() +  7);
+
+        const result1 = await repository.getFromTo(today, after7days);
+        assert.isArray(result1);
+        assert.isEmpty(result1);
+
+        const order = dummyFactory.order()
+        await orderRepository.save(order);
+
+        const workDay1 = dummyFactory.workDay();
+        workDay1.date = today;
+        workDay1.workHours = 16;
+
+        const workDay2 = dummyFactory.workDay();
+        workDay2.date = tomorrow;
+        workDay2.workHours = 16;
+
+        await repository.save(workDay1);
+        const result2 = await repository.getFromTo(today, after7days);
+        assert.isArray(result2);
+        assert.lengthOf(result2, 1);
+        assert.isArray(result2[0].assignedOrders);
+        assert.lengthOf(result2[0].assignedOrders, 0);
+        
+        const vehicleType = dummyFactory.vehicleType();
+        vehicleType.manufacturingHours = 8
+
+        await vehicleTypeRepository.save(vehicleType);
+        workDay1.asignateNewOrder(order.id, vehicleType, 2);
+        workDay2.asignateNewOrder(order.id, vehicleType, 1);
+        await repository.update(workDay1);
+        await repository.save(workDay2);
+
+        const result3 = await repository.getFromTo(today, after7days);
+
+        assert.isArray(result3);
+        assert.lengthOf(result3, 2);
+        assert.isArray(result3[0].assignedOrders);
+        assert.lengthOf(result3[0].assignedOrders, 1);
+        assert.equal(result3[0].assignedOrders[0].quantity, 2);
+        assert.isArray(result3[1].assignedOrders);
+        assert.lengthOf(result3[1].assignedOrders, 1);
+        assert.equal(result3[1].assignedOrders[0].quantity, 1);
+    });    
+
 });

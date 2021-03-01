@@ -2,7 +2,7 @@ const { pool } = require("../database-repository");
 
 const {
     ASSIGNED_ORDER
-} = require("../src/infrastructure/repository/work-day-repository-sqlserver/assigned-order-utils");
+} = require("../src/infrastructure/repository/work-day-repository-sqlserver/utils");
 
 const {
     WORK_DAY
