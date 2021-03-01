@@ -71,6 +71,7 @@ function groupByKey(items, key){
         if(items[i][key] !== currentKey){
             groups.push(currentGroup)
             currentGroup = []
+            currentKey = items[i][key];
         }
         currentGroup.push(items[i])
     }
@@ -185,6 +186,7 @@ async function getWorksFromTo(startDateStr, endDateStr, pool, workDayFactory){
     }
 
     const groups = groupByKey(result.recordset, "id_work_day");
+
     const workDays = groups.map(g => workDayFromGroupDTO(g, workDayFactory));
     return workDays;
 }
