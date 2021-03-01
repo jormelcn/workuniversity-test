@@ -25,6 +25,10 @@ class WorkDayRepository {
         throw new NotImplementedError("WorkDayRepository: se debe implementar update");
     }
 
+    getFromTo(startDate, endDate){
+        throw new NotImplementedError("WorkDayRepository: se debe implementar getFromTo");
+    }
+
 }
 
 module.exports = {

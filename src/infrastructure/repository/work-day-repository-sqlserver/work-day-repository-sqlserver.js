@@ -24,16 +24,16 @@ const {
     getWorkDayAssignedOrders,
     saveWorkDayAssignedOrders,
     updateAssignedOrderQuantity,
+    getWorksFromTo,
     ASSIGNED_ORDER,
     ASSIGNED_ORDER_ID_WORK_DAY,
     ASSIGNED_ORDER_QUANTITY,
     ASSIGNED_ORDER_VEHICLE_MANUFACTURING_HOURS,
-} = require("./assigned-order-utils");
-
-const WORK_DAY = "work_day";
-const WORK_DAY_ID = "id";
-const WORK_DAY_DATE = "date";
-const WORK_DAY_WORK_HOURS = "work_hours";
+    WORK_DAY,
+    WORK_DAY_ID,
+    WORK_DAY_DATE,
+    WORK_DAY_WORK_HOURS,
+} = require("./utils");
 
 
 class WorkDayRepositorySqlServer extends WorkDayRepository{
@@ -166,6 +166,15 @@ class WorkDayRepositorySqlServer extends WorkDayRepository{
         if (new_assignedOrders.length > 0)
             await saveWorkDayAssignedOrders(workDay.id, new_assignedOrders, this.pool);
 
+    }
+
+    async getFromTo(startDate, endDate){
+        return await getWorksFromTo(
+            startDate.toISOString().substring(0, 10),
+            endDate.toISOString().substring(0, 10),
+            this.pool,
+            this.workDayFactory,
+        )
     }
 
 }
