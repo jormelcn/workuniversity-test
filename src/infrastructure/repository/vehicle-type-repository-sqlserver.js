@@ -29,7 +29,7 @@ function vehicleTypeFromDTO(dto){
         dto[VEHICLE_TYPE_ID],
         dto[VEHICLE_TYPE_NAME],
         dto[VEHICLE_TYPE_MANUFACTORING_HOURS],
-        dto[VEHICLE_TYPE_IS_ACTIVE] === 1,
+        dto[VEHICLE_TYPE_IS_ACTIVE],
     );
 }
 
@@ -80,9 +80,10 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
         await this.pool.connect();
         try {
             const request = this.pool.request();
-            await request.query(`
+            const query = `
                 INSERT INTO "${VEHICLE_TYPE}" VALUES ('${id}', '${name}', '${manufacturingHours}', '${isActive ? 1 : 0}');
-            `);
+            `;
+            await request.query(query);
         }
         catch(e){
             throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`);
@@ -94,6 +95,7 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
             throw new InvalidArgumentError("VehicleTypeRepositorySqlServer: vehicleType debe ser instancia de VehicleType");
         const {id, name, manufacturingHours, isActive} = vehicleType;
         await this.pool.connect();
+        let result;
         try {
             const request = this.pool.request();
             const query = `
@@ -105,12 +107,13 @@ class VehicleTypeRepositorySqlServer extends VehicleTypeRepository {
                     WHERE
                         "${VEHICLE_TYPE_ID}" = '${id}'
             `;
-
-            await request.query(query);
+            result = await request.query(query);
         }
         catch(e){
             throw new InaccessibleRepository(`VehicleTypeRepositorySqlServer: error desconocido -> ${e}`);
         }
+        if (result.rowsAffected[0] === 0)
+            throw new NotFoundError(`VehicleTypeRepositorySqlServer: no se encontró el id ${vehicleType.id}`);
     }
 
     removeById(id){

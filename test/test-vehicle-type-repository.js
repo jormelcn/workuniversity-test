@@ -26,6 +26,7 @@ describe("Vehicle Type Repository", () => {
         const item = await repository.getById(vehicleType.id);    
         assert.instanceOf(item, VehicleType);    
         assert.equal(item.id, vehicleType.id);
+        assert.equal(item.isActive, vehicleType.isActive);
     });
 
 
