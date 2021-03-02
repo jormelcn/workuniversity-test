@@ -158,6 +158,8 @@ async function updateAssignedOrderQuantity(assignedOrder, pool){
         const sqlQuery = `
             UPDATE "${ASSIGNED_ORDER}"
                 SET "${ASSIGNED_ORDER_QUANTITY}" = '${assignedOrder.quantity}'
+            WHERE
+                "${ASSIGNED_ORDER_ID}" = '${assignedOrder.id}'
         `;
         await request.query(sqlQuery);
     }
