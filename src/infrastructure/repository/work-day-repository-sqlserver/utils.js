@@ -71,6 +71,7 @@ function groupByKey(items, key){
         if(items[i][key] !== currentKey){
             groups.push(currentGroup)
             currentGroup = []
+            currentKey = items[i][key];
         }
         currentGroup.push(items[i])
     }
@@ -157,6 +158,8 @@ async function updateAssignedOrderQuantity(assignedOrder, pool){
         const sqlQuery = `
             UPDATE "${ASSIGNED_ORDER}"
                 SET "${ASSIGNED_ORDER_QUANTITY}" = '${assignedOrder.quantity}'
+            WHERE
+                "${ASSIGNED_ORDER_ID}" = '${assignedOrder.id}'
         `;
         await request.query(sqlQuery);
     }
@@ -185,6 +188,7 @@ async function getWorksFromTo(startDateStr, endDateStr, pool, workDayFactory){
     }
 
     const groups = groupByKey(result.recordset, "id_work_day");
+
     const workDays = groups.map(g => workDayFromGroupDTO(g, workDayFactory));
     return workDays;
 }

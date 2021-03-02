@@ -1,7 +1,7 @@
 //Injection
 require("./injection/resolver/factory");
 require("./injection/resolver/repository-sqlserver");
-require("./injection/resolver//service");
+require("./injection/resolver/service");
 
 const app = require("./app");
 
